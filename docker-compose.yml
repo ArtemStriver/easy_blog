@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:15
+    container_name: easy_blog_db
+    ports:
+      - "5431:5432"
+    env_file:
+      - .env
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: easy_blog
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    command: sh -c "sleep 2; alembic upgrade head; uvicorn app.main:app --host 0.0.0.0 --port 8000"
